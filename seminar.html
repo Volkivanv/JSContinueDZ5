@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        .content {
+            display: flex;
+            justify-content: center;
+            gap: 32px;
+            flex-wrap: wrap;
+        }
+        .item {
+            width: 250px;
+            border: 1px solid #000;
+            padding: 16px;
+        }
+        .item img {
+            display: block;
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="content"></div>
+    <script src = "data.js"> </script>
+    <script>
+        const userData = JSON.parse(dataInfo);
+        console.log(userData);
+
+        const contentEl = document.querySelector('.content');
+
+        // contentEl.textContent = `Это данные из json ${userData.sammy.username}`;
+        userData.forEach(personData => {
+            const card = document.createElement('div');
+            card.classList.add('item');
+            const h2Username = document.createElement('h2');
+            h2Username.textContent = personData.username;
+            
+            const h3Location = document.createElement('h3');
+            h3Location.textContent = personData.location;
+
+            const pOnline = document.createElement('p');
+            pOnline.textContent = personData.online? 'online': 'offline';
+
+            const pFollowers = document.createElement('p');
+            pFollowers.textContent = personData.followers;
+
+            const imgUrl = document.createElement('img');
+            imgUrl.src = personData.url;
+            imgUrl.alt = 'фоточка';
+
+            card.appendChild(h2Username);
+            card.appendChild(h3Location);
+            card.appendChild(pOnline);
+            card.appendChild(pFollowers);
+            card.appendChild(imgUrl);
+            contentEl.appendChild(card);
+
+        });
+
+    </script>
+</body>
+</html>

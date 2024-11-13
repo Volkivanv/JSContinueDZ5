@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width,
+initial-scale=1.0"
+    />
+    <title>Products List</title>
+    <style>
+      /* Стили по желанию */
+      ul {
+        list-style-type: none;
+        padding: 0;
+      }
+      li {
+        margin: 20px 0;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+      }
+      img {
+        margin-bottom: 10px;
+      }
+      h2 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+      button {
+        margin-top: 10px;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #0056b3;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Products List</h1>
+    <ul id="product-list">
+      <!-- Сюда будут добавляться продукты -->
+    </ul>
+    <!-- Подключение файла data.js -->
+    <!-- <script src="datah.js"></script> -->
+    <!-- Подключение файла script.js -->
+    <!-- <script src="script.js"></script> -->
+    <script>
+      const ulEl = document.querySelector("#product-list");
+
+      async function getJSON(url) {
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error("Выявлена ошибка при выполнении сетевого запроса :(");
+        }
+        return await response.json();
+      }
+
+      (async () => {
+        try {
+          const data = await getJSON(
+            "https://random-data-api.com/api/v3/projects/ee099cdd-a576-4f6a-8063-da1d8d7ebfa3?api_key=gi4ibrTkH6990C_wdiVxkw"
+          );
+
+          console.log(data);
+
+          console.log(ulEl);
+
+          data.json_array.forEach((element) => {
+            const liEl = document.createElement("li");
+
+            const imgUrl = document.createElement("img");
+            imgUrl.src = "picture.jpg";
+            imgUrl.alt = "фоточка";
+
+            const h2Title = document.createElement("h2");
+            h2Title.textContent = element.title;
+
+            const h3Category = document.createElement("h3");
+            h3Category.textContent = element.category;
+            const pDescription = document.createElement("p");
+            pDescription.textContent = element.description;
+            const h2Price = document.createElement("h2");
+            h2Price.textContent = `Price is ${element.price}$`;
+            const h3Rating = document.createElement("h3");
+            h3Rating.textContent = `Rating ${element.rating.rate}, Total people rated: ${element.rating.count}`;
+
+            liEl.appendChild(imgUrl);
+            liEl.appendChild(h2Title);
+            liEl.appendChild(h3Category);
+            liEl.appendChild(pDescription);
+            liEl.appendChild(h2Price);
+            liEl.appendChild(h3Rating);
+
+            ulEl.appendChild(liEl);
+          });
+        } catch (error) {
+          console.error("Ошибка не на вашей стороне. Подробности:", error);
+        }
+      })();
+    </script>
+  </body>
+</html>
