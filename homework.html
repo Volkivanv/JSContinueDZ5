@@ -42,6 +42,46 @@ initial-scale=1.0"
       button:hover {
         background-color: #0056b3;
       }
+      .cart {
+        margin-top: 40px;
+        padding: 20px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+      }
+      .cart h2 {
+        margin-top: 0;
+      }
+      .cart form {
+        display: flex;
+        gap: 5px;
+      }
+      .cart input {
+        margin-top: 10px;
+        padding: 10px 15px;
+        border: 3px solid #007bff;
+        border-radius: 5px;
+        background-color: white;
+        color: #007bff;
+        width: 30px;
+        text-align: center;
+        font-size: 25px;
+      }
+      .product-in-card{
+
+      }
+      .button-delete {
+        position:absolute;
+        padding: 2px;
+        right: 30px;
+        margin-top: 10px;
+        margin-right: 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #F9F9F9;
+        /* color: white; */
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -49,12 +89,19 @@ initial-scale=1.0"
     <ul id="product-list">
       <!-- Сюда будут добавляться продукты -->
     </ul>
+    <div class="cart">
+      <h2>Cart</h2>
+      <ul id="cart-list">
+        <!-- Сюда будут добавляться товары из корзины -->
+      </ul>
+    </div>
     <!-- Подключение файла data.js -->
     <!-- <script src="datah.js"></script> -->
     <!-- Подключение файла script.js -->
     <!-- <script src="script.js"></script> -->
     <script>
       const ulEl = document.querySelector("#product-list");
+      const ulCart = document.querySelector("#cart-list");
 
       async function getJSON(url) {
         const response = await fetch(url);
@@ -70,12 +117,15 @@ initial-scale=1.0"
             "https://random-data-api.com/api/v3/projects/ee099cdd-a576-4f6a-8063-da1d8d7ebfa3?api_key=gi4ibrTkH6990C_wdiVxkw"
           );
 
-          console.log(data);
+          // console.log(data);
 
-          console.log(ulEl);
+          // console.log(ulEl);
+          let i = 1;
 
           data.json_array.forEach((element) => {
             const liEl = document.createElement("li");
+            liEl.id = i;
+            i++;
 
             const imgUrl = document.createElement("img");
             imgUrl.src = "picture.jpg";
@@ -92,6 +142,8 @@ initial-scale=1.0"
             h2Price.textContent = `Price is ${element.price}$`;
             const h3Rating = document.createElement("h3");
             h3Rating.textContent = `Rating ${element.rating.rate}, Total people rated: ${element.rating.count}`;
+            const buttonAddToCart = document.createElement("button");
+            buttonAddToCart.textContent = "Add to Cart";
 
             liEl.appendChild(imgUrl);
             liEl.appendChild(h2Title);
@@ -99,9 +151,79 @@ initial-scale=1.0"
             liEl.appendChild(pDescription);
             liEl.appendChild(h2Price);
             liEl.appendChild(h3Rating);
+            let cartEl = liEl.cloneNode(true);
+            cartEl.classList.add('product-in-card');
+            cartEl.counter = 0;
+            const formEl = document.createElement("form");
+            const h3El = document.createElement("h3");
+            h3El.textContent = "Count: ";
+
+            const buttonMinus = document.createElement("button");
+            buttonMinus.textContent = "-";
+            const buttonPlus = document.createElement("button");
+            buttonPlus.textContent = "+";
+
+            const inputEl = document.createElement("input");
+          
+            const buttonDelete = document.createElement('button');
+            buttonDelete.classList.add('button-delete');
+            const imgCross = document.createElement('img');
+            imgCross.src = "./Vector.svg";
+            buttonDelete.appendChild(imgCross);
+            cartEl.appendChild(buttonDelete);
+
+            formEl.appendChild(h3El);
+
+            formEl.appendChild(buttonMinus);
+            formEl.appendChild(inputEl);
+            formEl.appendChild(buttonPlus);
+            
+
+
+            buttonPlus.addEventListener("click", function (e) {
+              // body
+              cartEl.counter++;
+              inputEl.value = cartEl.counter;
+              e.preventDefault();
+            });
+            buttonMinus.addEventListener("click", function (e) {
+              // body
+              if (cartEl.counter > 1) {
+                cartEl.counter--;
+                inputEl.value = cartEl.counter;
+                
+              } else {
+                cartEl.counter = 0;
+                cartEl.parentElement.removeChild(cartEl);
+              }
+              e.preventDefault();
+            });
+            
+            buttonDelete.addEventListener('click', function (e) {
+              // body
+                cartEl.counter = 0;
+                cartEl.parentElement.removeChild(cartEl);
+                e.preventDefault();
+            });
+
+            cartEl.appendChild(formEl);
+
+            liEl.appendChild(buttonAddToCart);
 
             ulEl.appendChild(liEl);
+
+
+
+            buttonAddToCart.addEventListener("click", function (e) {
+              if (cartEl.counter == 0) {
+                ulCart.appendChild(cartEl);
+              }
+              cartEl.counter++;
+              inputEl.value = cartEl.counter;
+              console.log(`${cartEl.id} count: ${cartEl.counter}`);
+            });
           });
+
         } catch (error) {
           console.error("Ошибка не на вашей стороне. Подробности:", error);
         }
